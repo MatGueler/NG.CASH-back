@@ -12,7 +12,7 @@ datasource db {
 
 model Accounts {
   id            Int            @id @default(autoincrement())
-  balance       String
+  balance       Decimal        @db.Decimal(10, 2)
   debitAccount  Transactions[] @relation("debitAccount")
   creditAccount Transactions[] @relation("creditAccount")
   Users         Users[]
@@ -36,7 +36,7 @@ model Transactions {
   creditedAccountId Int
   debitedAccount    Accounts @relation(name: "debitAccount", fields: [debitedAccountId], references: [id])
   creditedAccount   Accounts @relation(name: "creditAccount", fields: [creditedAccountId], references: [id])
-  value             String
+  value             Decimal        @db.Decimal(10, 2)
   createdAt         DateTime @default(now())
 
   @@map("transactions")

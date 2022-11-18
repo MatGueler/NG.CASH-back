@@ -1,3 +1,5 @@
+import { Users } from "@prisma/client";
+
 export interface IRegister {
   id?: number;
   username: string;
@@ -6,3 +8,5 @@ export interface IRegister {
 }
 
 export type ILogin = Omit<IRegister, "confirmPassword">;
+
+export type UserType = Users;

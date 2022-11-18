@@ -1,11 +1,15 @@
+import * as userRepository from "../Repository/UserRepository";
+
 //  # Libs
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { IRegister } from "../Types/UserTypes";
+
+// # Types
+import { IRegister, UserType } from "../Types/UserTypes";
 
 export async function registerUser(body: IRegister) {
-  // # User should not exist
   await comparePasswords(body);
+  await verifyUsernameAvailability(body.username);
   const encryptedPassword = encryptPassword(body.password);
   // * Remove property confirmPassword of body
   delete body.confirmPassword;
@@ -14,6 +18,20 @@ export async function registerUser(body: IRegister) {
 
 // - Database functions
 async function createUser(body: IRegister) {
+  //   await createUser(body);
+}
+
+async function verifyUsernameAvailability(username: string) {
+  const user: UserType = await userRepository.verifyUsernameAvailability(
+    username
+  );
+
+  if (user) {
+    throw "username insidponível";
+  }
+}
+
+async function createAccount(body: IRegister) {
   //   await insertUser(body);
 }
 

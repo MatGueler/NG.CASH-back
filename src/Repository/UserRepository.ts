@@ -1,3 +1,4 @@
+import { Users } from "@prisma/client";
 import prisma from "../Database/prisma";
 import { UserType } from "../Types/UserTypes";
 
@@ -11,7 +12,7 @@ export async function createAccount(initialBalance: number) {
 
 export async function verifyUsernameAvailability(
   username: string
-): Promise<UserType> {
+): Promise<Users> {
   return await prisma.users.findFirst({
     where: {
       username,

@@ -9,4 +9,4 @@ export interface IRegister {
 
 export type ILogin = Omit<IRegister, "confirmPassword">;
 
-export type UserType = Users;
+export type UserType = Omit<Users, "id">;

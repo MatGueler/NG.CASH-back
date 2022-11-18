@@ -10,15 +10,17 @@ import { IRegister, UserType } from "../Types/UserTypes";
 export async function registerUser(body: IRegister) {
   await comparePasswords(body);
   await verifyUsernameAvailability(body.username);
+  const accountId = await createAccount();
   const encryptedPassword = encryptPassword(body.password);
-  // * Remove property confirmPassword of body
+
   delete body.confirmPassword;
-  await createUser({ ...body, password: encryptedPassword });
+
+  await createUser({ ...body, password: encryptedPassword, accountId });
 }
 
 // - Database functions
-async function createUser(body: IRegister) {
-  //   await createUser(body);
+async function createUser(body: UserType) {
+  await userRepository.createUser(body);
 }
 
 async function verifyUsernameAvailability(username: string) {
@@ -31,8 +33,10 @@ async function verifyUsernameAvailability(username: string) {
   }
 }
 
-async function createAccount(body: IRegister) {
-  //   await insertUser(body);
+async function createAccount() {
+  const initialBalance: number = 100;
+  const account = await userRepository.createAccount(initialBalance);
+  return account.id;
 }
 
 // - Aux functions

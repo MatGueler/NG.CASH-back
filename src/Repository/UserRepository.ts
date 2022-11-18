@@ -1,8 +1,12 @@
 import prisma from "../Database/prisma";
-import { IRegister, UserType } from "../Types/UserTypes";
+import { UserType } from "../Types/UserTypes";
 
-export async function createUser(body: IRegister) {
-  //   await prisma.users.create({ data: body });
+export async function createUser(body: UserType) {
+  await prisma.users.create({ data: body });
+}
+
+export async function createAccount(initialBalance: number) {
+  return await prisma.accounts.create({ data: { balance: initialBalance } });
 }
 
 export async function verifyUsernameAvailability(

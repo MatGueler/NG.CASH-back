@@ -11,8 +11,19 @@ datasource db {
 }
 
 model Accounts {
-  id       Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   balance String
+  Users   Users[]
 
   @@map("accounts")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique @db.VarChar(50)
+  password  String   @db.VarChar(50)
+  account   Accounts @relation(fields: [accountId], references: [id])
+  accountId Int
+
+  @@map("users")
 }

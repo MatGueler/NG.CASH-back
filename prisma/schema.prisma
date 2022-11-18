@@ -11,9 +11,11 @@ datasource db {
 }
 
 model Accounts {
-  id      Int     @id @default(autoincrement())
-  balance String
-  Users   Users[]
+  id            Int            @id @default(autoincrement())
+  balance       String
+  debitAccount  Transactions[] @relation("debitAccount")
+  creditAccount Transactions[] @relation("creditAccount")
+  Users         Users[]
 
   @@map("accounts")
 }
@@ -26,4 +28,16 @@ model Users {
   accountId Int
 
   @@map("users")
+}
+
+model Transactions {
+  id                Int      @id @default(autoincrement())
+  debitedAccountId  Int
+  creditedAccountId Int
+  debitedAccount    Accounts @relation(name: "debitAccount", fields: [debitedAccountId], references: [id])
+  creditedAccount   Accounts @relation(name: "creditAccount", fields: [creditedAccountId], references: [id])
+  value             String
+  createdAt         DateTime @default(now())
+
+  @@map("transactions")
 }

@@ -10,9 +10,10 @@ const complexityOptions = {
   numeric: 1,
 };
 
-const loginSchema = joi.object({
+const registerSchema = joi.object({
   username: joi.string().min(3).required(),
   password: passwordComplexity(complexityOptions),
+  confirmPassword: passwordComplexity(complexityOptions),
 });
 
-export default loginSchema;
+export default registerSchema;

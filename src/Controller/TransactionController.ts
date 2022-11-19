@@ -10,6 +10,15 @@ export async function GetUserBalance(req: AuthenticatedRequest, res: Response) {
   res.status(200).send(balance);
 }
 
+export async function GetAllTransaction(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const { userId } = req;
+  const transactions = await transactionService.getTransactions(userId);
+  res.status(200).send(transactions);
+}
+
 export async function CreateTransaction(
   req: AuthenticatedRequest,
   res: Response

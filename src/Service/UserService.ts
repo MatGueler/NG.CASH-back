@@ -21,7 +21,7 @@ export async function registerUser(body: IRegister) {
 
 export async function loginUser(body: ILogin) {
   const user = await verifyUserNameExist(body.username);
-  compareEncryptedPassword(body.password, user.password);
+  await compareEncryptedPassword(body.password, user.password);
   const token = generateToken(user.id);
   return token;
 }

@@ -9,6 +9,14 @@ export async function getUser(userId: number) {
   });
 }
 
+export async function getAllTransactions(accountId: number) {
+  return await prisma.transactions.findMany({
+    where: {
+      OR: [{ debitedAccountId: accountId }, { creditedAccountId: accountId }],
+    },
+  });
+}
+
 export async function getUserByUsername(username: string) {
   return await prisma.users.findFirst({
     where: {

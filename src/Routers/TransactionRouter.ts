@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   CreateTransaction,
+  GetAllTransaction,
   GetUserBalance,
 } from "../Controller/TransactionController";
 import { authenticateToken } from "../Middlewares/AuthenticationMiddleware";
@@ -12,6 +13,7 @@ const transactionRouter = Router();
 transactionRouter
   .all("/*", authenticateToken)
   .get("/balance", GetUserBalance)
+  .get("/transactions", GetAllTransaction)
   .post(
     "/new/transaction",
     validateSchema(transactionSchema),

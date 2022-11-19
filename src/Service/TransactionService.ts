@@ -12,6 +12,11 @@ export async function getBalanceByUser(userId: number) {
   return await getBalanceByAccount(user.accountId);
 }
 
+export async function getTransactions(userId: number) {
+  const user: Users = await getUserbyId(userId);
+  return await transactionRepository.getAllTransactions(user.accountId);
+}
+
 export async function createNewTransaction(transactionData: ITransaction) {
   const debitedUser: Users = await getUserbyId(transactionData.userId);
   const debitedAccount = await getBalanceByAccount(debitedUser.accountId);

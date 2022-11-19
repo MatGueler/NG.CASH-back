@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../Middlewares/AuthenticationMiddleware";
 
 import * as transactionService from "../Service/TransactionService";
-import { ITransaction } from "../Types/UserTypes";
+import { ITransaction } from "../Types/TransactionType";
 
 export async function GetUserBalance(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;

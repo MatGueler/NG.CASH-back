@@ -8,12 +8,6 @@ export interface IRegister {
   confirmPassword: string;
 }
 
-export interface ITransaction {
-  username: string;
-  value: number;
-  userId?: number;
-}
-
 export type ILogin = Omit<IRegister, "confirmPassword">;
 
 export type UserType = Omit<Users, "id">;

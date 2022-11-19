@@ -3,8 +3,8 @@ import { GetUserBalance } from "../Controller/TransactionController";
 import { authenticateToken } from "../Middlewares/AuthenticationMiddleware";
 import { validateSchema } from "../Middlewares/ValidateSchemaMiddleware";
 
-const userRouter = Router();
+const transactionRouter = Router();
 
-userRouter.all("/*", authenticateToken).get("/balance", GetUserBalance);
+transactionRouter.all("/*", authenticateToken).get("/balance", GetUserBalance);
 
-export default userRouter;
+export default transactionRouter;

@@ -28,6 +28,17 @@ export async function GetCashInTransaction(
   res.status(200).send(transactions);
 }
 
+export async function GetCashOutTransaction(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const { userId } = req;
+  const transactions = await transactionService.getTransactionsByCashOut(
+    userId
+  );
+  res.status(200).send(transactions);
+}
+
 export async function CreateTransaction(
   req: AuthenticatedRequest,
   res: Response

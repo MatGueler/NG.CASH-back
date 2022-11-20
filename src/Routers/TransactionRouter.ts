@@ -3,6 +3,7 @@ import {
   CreateTransaction,
   GetAllTransaction,
   GetCashInTransaction,
+  GetCashOutTransaction,
   GetUserBalance,
 } from "../Controller/TransactionController";
 
@@ -18,6 +19,7 @@ transactionRouter
   .get("/balance", GetUserBalance)
   .get("/transactions", GetAllTransaction)
   .get("/transactions/cash-in", GetCashInTransaction)
+  .get("/transactions/cash-out", GetCashOutTransaction)
   .post(
     "/new/transaction",
     validateSchema(transactionSchema),

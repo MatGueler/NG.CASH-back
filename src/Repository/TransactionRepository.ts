@@ -14,6 +14,29 @@ export async function getAllTransactions(accountId: number) {
     where: {
       OR: [{ debitedAccountId: accountId }, { creditedAccountId: accountId }],
     },
+    select: {
+      id: true,
+      creditedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      debitedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      value: true,
+      createdAt: true,
+    },
   });
 }
 
@@ -21,6 +44,60 @@ export async function getCashInTransaction(accountId: number) {
   return await prisma.transactions.findMany({
     where: {
       creditedAccountId: accountId,
+    },
+    select: {
+      id: true,
+      creditedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      debitedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      value: true,
+      createdAt: true,
+    },
+  });
+}
+
+export async function getCashOutTransaction(accountId: number) {
+  return await prisma.transactions.findMany({
+    where: {
+      debitedAccountId: accountId,
+    },
+    select: {
+      id: true,
+      creditedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      debitedAccount: {
+        select: {
+          Users: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+      value: true,
+      createdAt: true,
     },
   });
 }

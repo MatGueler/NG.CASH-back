@@ -22,6 +22,11 @@ export async function getTransactionsByCashIn(userId: number) {
   return await transactionRepository.getCashInTransaction(user.accountId);
 }
 
+export async function getTransactionsByCashOut(userId: number) {
+  const user: Users = await getUserbyId(userId);
+  return await transactionRepository.getCashOutTransaction(user.accountId);
+}
+
 export async function createNewTransaction(transactionData: ITransaction) {
   const debitedUser: Users = await getUserbyId(transactionData.userId);
   const debitedAccount = await getBalanceByAccount(debitedUser.accountId);

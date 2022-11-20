@@ -22,8 +22,16 @@ transactionRouter
     validateSchema(transactionSchema.transactionByDateSchema),
     GetAllTransaction
   )
-  .get("/transactions/cash-in",validateSchema(transactionSchema.transactionByDateSchema), GetCashInTransaction)
-  .get("/transactions/cash-out", GetCashOutTransaction)
+  .get(
+    "/transactions/cash-in",
+    validateSchema(transactionSchema.transactionByDateSchema),
+    GetCashInTransaction
+  )
+  .get(
+    "/transactions/cash-out",
+    validateSchema(transactionSchema.transactionByDateSchema),
+    GetCashOutTransaction
+  )
   .post(
     "/new/transaction",
     validateSchema(transactionSchema),

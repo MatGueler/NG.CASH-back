@@ -44,9 +44,19 @@ export async function getTransactionsByCashIn(
   }
 }
 
-export async function getTransactionsByCashOut(userId: number) {
-  const user: Users = await getUserbyId(userId);
-  return await transactionRepository.getCashOutTransaction(user.accountId);
+export async function getTransactionsByCashOut(
+  transactionData: ITransactionDate
+) {
+  const user: Users = await getUserbyId(transactionData.userId);
+  if (transactionData.startDate === "" || transactionData.endDate === "") {
+    return await transactionRepository.getCashOutTransaction(user.accountId);
+  } else {
+    return await transactionRepository.getCashOutTransactionByDate(
+      transactionData.startDate,
+      transactionData.endDate,
+      user.accountId
+    );
+  }
 }
 
 export async function createNewTransaction(transactionData: ITransaction) {

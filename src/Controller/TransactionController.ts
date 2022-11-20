@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../Middlewares/AuthenticationMiddleware";
 
 import * as transactionService from "../Service/TransactionService";
-import { ITransaction } from "../Types/TransactionType";
+import { ITransaction, ITransactionDate } from "../Types/TransactionType";
 
 export async function GetUserBalance(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -36,6 +36,19 @@ export async function GetCashOutTransaction(
   const transactions = await transactionService.getTransactionsByCashOut(
     userId
   );
+  res.status(200).send(transactions);
+}
+
+export async function GetTransactionsByDate(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const { userId } = req;
+  const body: ITransactionDate = req.body;
+  const transactions = await transactionService.getTransactionsByDate({
+    ...body,
+    userId,
+  });
   res.status(200).send(transactions);
 }
 

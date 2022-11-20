@@ -7,3 +7,9 @@ export interface ITransaction {
 }
 
 export type CreateTransactionType = Omit<Transactions, "id" | "createdAt">;
+
+export interface ITransactionDate {
+  startDate: string;
+  endDate: string;
+  userId?: number;
+}

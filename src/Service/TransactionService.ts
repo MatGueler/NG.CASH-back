@@ -1,7 +1,11 @@
 import { Transactions, Users } from "@prisma/client";
 import { number } from "joi";
 import * as transactionRepository from "../Repository/TransactionRepository";
-import { CreateTransactionType, ITransaction } from "../Types/TransactionType";
+import {
+  CreateTransactionType,
+  ITransaction,
+  ITransactionDate,
+} from "../Types/TransactionType";
 
 //  # Libs
 
@@ -25,6 +29,15 @@ export async function getTransactionsByCashIn(userId: number) {
 export async function getTransactionsByCashOut(userId: number) {
   const user: Users = await getUserbyId(userId);
   return await transactionRepository.getCashOutTransaction(user.accountId);
+}
+
+export async function getTransactionsByDate(transactionData: ITransactionDate) {
+  const user: Users = await getUserbyId(transactionData.userId);
+  return await transactionRepository.getTransactionsByDate(
+    transactionData.startDate,
+    transactionData.endDate,
+    user.accountId
+  );
 }
 
 export async function createNewTransaction(transactionData: ITransaction) {

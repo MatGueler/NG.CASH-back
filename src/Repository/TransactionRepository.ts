@@ -102,6 +102,19 @@ export async function getCashOutTransaction(accountId: number) {
   });
 }
 
+export async function getTransactionsByDate(
+  startDate: string,
+  endDate: string,
+  accountId: number
+) {
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE t."createdAt" BETWEEN ${startDate} AND ${endDate} AND t."debitedAccountId"=${accountId} OR t."creditedAccountId"=${accountId}
+  `;
+}
+
 export async function getUserByUsername(username: string) {
   return await prisma.users.findFirst({
     where: {

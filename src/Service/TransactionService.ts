@@ -20,15 +20,28 @@ export async function getTransactions(transactionData: ITransactionDate) {
   const user: Users = await getUserbyId(transactionData.userId);
   if (transactionData.startDate === "" || transactionData.endDate === "") {
     return await transactionRepository.getAllTransactions(user.accountId);
-  }
-  else {
-    return await transactionRepository.getTransactionsByDate(transactionData.startDate,transactionData.endDate,user.accountId)
+  } else {
+    return await transactionRepository.getTransactionsByDate(
+      transactionData.startDate,
+      transactionData.endDate,
+      user.accountId
+    );
   }
 }
 
-export async function getTransactionsByCashIn(userId: number) {
-  const user: Users = await getUserbyId(userId);
-  return await transactionRepository.getCashInTransaction(user.accountId);
+export async function getTransactionsByCashIn(
+  transactionData: ITransactionDate
+) {
+  const user: Users = await getUserbyId(transactionData.userId);
+  if (transactionData.startDate === "" || transactionData.endDate === "") {
+    return await transactionRepository.getCashInTransaction(user.accountId);
+  } else {
+    return await transactionRepository.getCashInTransactionByDate(
+      transactionData.startDate,
+      transactionData.endDate,
+      user.accountId
+    );
+  }
 }
 
 export async function getTransactionsByCashOut(userId: number) {

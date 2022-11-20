@@ -40,6 +40,32 @@ export async function getAllTransactions(accountId: number) {
   });
 }
 
+export async function getTransactionsByDate(
+  startDate: string,
+  endDate: string,
+  accountId: number
+) {
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  `;
+}
+
+export async function getCashInTransactionByDate(
+  startDate: string,
+  endDate: string,
+  accountId: number
+) {
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE (t."creditedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  `;
+}
+
 export async function getCashInTransaction(accountId: number) {
   return await prisma.transactions.findMany({
     where: {
@@ -100,19 +126,6 @@ export async function getCashOutTransaction(accountId: number) {
       createdAt: true,
     },
   });
-}
-
-export async function getTransactionsByDate(
-  startDate: string,
-  endDate: string,
-  accountId: number
-) {
-  return await prisma.$queryRaw`
-  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
-  JOIN users u ON u."accountId"=t."debitedAccountId"
-  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
-  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
-  `;
 }
 
 export async function getUserByUsername(username: string) {

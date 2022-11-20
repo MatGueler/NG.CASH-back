@@ -28,7 +28,11 @@ export async function GetCashInTransaction(
   res: Response
 ) {
   const { userId } = req;
-  const transactions = await transactionService.getTransactionsByCashIn(userId);
+    const body: ITransactionDate = req.body;
+  const transactions = await transactionService.getTransactionsByCashIn({
+    ...body,
+    userId,
+  });
   res.status(200).send(transactions);
 }
 

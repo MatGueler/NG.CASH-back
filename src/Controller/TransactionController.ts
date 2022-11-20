@@ -19,6 +19,15 @@ export async function GetAllTransaction(
   res.status(200).send(transactions);
 }
 
+export async function GetCashInTransaction(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  const { userId } = req;
+  const transactions = await transactionService.getTransactionsByCashIn(userId);
+  res.status(200).send(transactions);
+}
+
 export async function CreateTransaction(
   req: AuthenticatedRequest,
   res: Response

@@ -17,6 +17,14 @@ export async function getAllTransactions(accountId: number) {
   });
 }
 
+export async function getCashInTransaction(accountId: number) {
+  return await prisma.transactions.findMany({
+    where: {
+      creditedAccountId: accountId,
+    },
+  });
+}
+
 export async function getUserByUsername(username: string) {
   return await prisma.users.findFirst({
     where: {

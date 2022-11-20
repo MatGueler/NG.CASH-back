@@ -16,9 +16,14 @@ export async function getBalanceByUser(userId: number) {
   return await getBalanceByAccount(user.accountId);
 }
 
-export async function getTransactions(userId: number) {
-  const user: Users = await getUserbyId(userId);
-  return await transactionRepository.getAllTransactions(user.accountId);
+export async function getTransactions(transactionData: ITransactionDate) {
+  const user: Users = await getUserbyId(transactionData.userId);
+  if (transactionData.startDate === "" || transactionData.endDate === "") {
+    return await transactionRepository.getAllTransactions(user.accountId);
+  }
+  else {
+    return await transactionRepository.getTransactionsByDate(transactionData.startDate,transactionData.endDate,user.accountId)
+  }
 }
 
 export async function getTransactionsByCashIn(userId: number) {
@@ -29,15 +34,6 @@ export async function getTransactionsByCashIn(userId: number) {
 export async function getTransactionsByCashOut(userId: number) {
   const user: Users = await getUserbyId(userId);
   return await transactionRepository.getCashOutTransaction(user.accountId);
-}
-
-export async function getTransactionsByDate(transactionData: ITransactionDate) {
-  const user: Users = await getUserbyId(transactionData.userId);
-  return await transactionRepository.getTransactionsByDate(
-    transactionData.startDate,
-    transactionData.endDate,
-    user.accountId
-  );
 }
 
 export async function createNewTransaction(transactionData: ITransaction) {

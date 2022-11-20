@@ -15,7 +15,11 @@ export async function GetAllTransaction(
   res: Response
 ) {
   const { userId } = req;
-  const transactions = await transactionService.getTransactions(userId);
+  const body: ITransactionDate = req.body;
+  const transactions = await transactionService.getTransactions({
+    ...body,
+    userId,
+  });
   res.status(200).send(transactions);
 }
 
@@ -36,19 +40,6 @@ export async function GetCashOutTransaction(
   const transactions = await transactionService.getTransactionsByCashOut(
     userId
   );
-  res.status(200).send(transactions);
-}
-
-export async function GetTransactionsByDate(
-  req: AuthenticatedRequest,
-  res: Response
-) {
-  const { userId } = req;
-  const body: ITransactionDate = req.body;
-  const transactions = await transactionService.getTransactionsByDate({
-    ...body,
-    userId,
-  });
   res.status(200).send(transactions);
 }
 

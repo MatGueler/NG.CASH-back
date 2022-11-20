@@ -4,7 +4,6 @@ import {
   GetAllTransaction,
   GetCashInTransaction,
   GetCashOutTransaction,
-  GetTransactionsByDate,
   GetUserBalance,
 } from "../Controller/TransactionController";
 
@@ -18,10 +17,13 @@ const transactionRouter = Router();
 transactionRouter
   .all("/*", authenticateToken)
   .get("/balance", GetUserBalance)
-  .get("/transactions", GetAllTransaction)
+  .get(
+    "/transactions",
+    validateSchema(transactionSchema.transactionByDateSchema),
+    GetAllTransaction
+  )
   .get("/transactions/cash-in", GetCashInTransaction)
   .get("/transactions/cash-out", GetCashOutTransaction)
-  .get("/transactions/date", GetTransactionsByDate)
   .post(
     "/new/transaction",
     validateSchema(transactionSchema),

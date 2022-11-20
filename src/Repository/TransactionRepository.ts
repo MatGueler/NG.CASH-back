@@ -111,7 +111,7 @@ export async function getTransactionsByDate(
   SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
-  WHERE t."createdAt" BETWEEN ${startDate} AND ${endDate} AND t."debitedAccountId"=${accountId} OR t."creditedAccountId"=${accountId}
+  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
   `;
 }
 

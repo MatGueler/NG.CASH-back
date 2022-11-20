@@ -20,34 +20,12 @@ export async function getUserByUsername(username: string) {
 
 // - All transactions
 export async function getAllTransactions(accountId: number) {
-  return await prisma.transactions.findMany({
-    where: {
-      OR: [{ debitedAccountId: accountId }, { creditedAccountId: accountId }],
-    },
-    select: {
-      id: true,
-      creditedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      debitedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      value: true,
-      createdAt: true,
-    },
-  });
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId})
+  `;
 }
 
 export async function getTransactionsByDate(
@@ -78,66 +56,22 @@ export async function getCashInTransactionByDate(
 }
 
 export async function getCashInTransaction(accountId: number) {
-  return await prisma.transactions.findMany({
-    where: {
-      creditedAccountId: accountId,
-    },
-    select: {
-      id: true,
-      creditedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      debitedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      value: true,
-      createdAt: true,
-    },
-  });
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE (t."creditedAccountId"=${accountId})
+  `;
 }
 
 // - Cash-out transactions
 export async function getCashOutTransaction(accountId: number) {
-  return await prisma.transactions.findMany({
-    where: {
-      debitedAccountId: accountId,
-    },
-    select: {
-      id: true,
-      creditedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      debitedAccount: {
-        select: {
-          Users: {
-            select: {
-              username: true,
-            },
-          },
-        },
-      },
-      value: true,
-      createdAt: true,
-    },
-  });
+  return await prisma.$queryRaw`
+  SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
+  JOIN users u ON u."accountId"=t."debitedAccountId"
+  JOIN users u2 ON u2."accountId"=t."creditedAccountId"
+  WHERE (t."debitedAccountId"=${accountId})
+  `;
 }
 
 export async function getCashOutTransactionByDate(

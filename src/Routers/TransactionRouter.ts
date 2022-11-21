@@ -2,8 +2,6 @@ import { Router } from "express";
 import {
   CreateTransaction,
   GetAllTransaction,
-  GetCashInTransaction,
-  GetCashOutTransaction,
   GetUserBalance,
 } from "../Controller/TransactionController";
 
@@ -17,24 +15,14 @@ const transactionRouter = Router();
 transactionRouter
   .all("/*", authenticateToken)
   .get("/balance", GetUserBalance)
-  .get(
+  .post(
     "/transactions",
     validateSchema(transactionSchema.transactionByDateSchema),
     GetAllTransaction
   )
-  .get(
-    "/transactions/cash-in",
-    validateSchema(transactionSchema.transactionByDateSchema),
-    GetCashInTransaction
-  )
-  .get(
-    "/transactions/cash-out",
-    validateSchema(transactionSchema.transactionByDateSchema),
-    GetCashOutTransaction
-  )
   .post(
     "/new/transaction",
-    validateSchema(transactionSchema),
+    validateSchema(transactionSchema.newTransactionSchema),
     CreateTransaction
   );
 

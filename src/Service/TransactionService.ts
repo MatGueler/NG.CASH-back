@@ -19,13 +19,32 @@ export async function getBalanceByUser(userId: number) {
 export async function getTransactions(transactionData: ITransactionDate) {
   const user: Users = await getUserbyId(transactionData.userId);
   if (transactionData.startDate === "" || transactionData.endDate === "") {
-    return await transactionRepository.getAllTransactions(user.accountId);
+    return await filterTypeWithoutDate(transactionData, user);
   } else {
     return await transactionRepository.getTransactionsByDate(
       transactionData.startDate,
       transactionData.endDate,
       user.accountId
     );
+  }
+}
+
+async function filterTypeWithoutDate(
+  transactionData: ITransactionDate,
+  user: Users
+) {
+  switch (true) {
+    case transactionData.debited && transactionData.credited:
+      return await transactionRepository.getAllTransactions(user.accountId);
+
+    case transactionData.debited && !transactionData.credited:
+      return await transactionRepository.getCashOutTransaction(user.accountId);
+
+    case !transactionData.debited && transactionData.credited:
+      return await transactionRepository.getCashInTransaction(user.accountId);
+
+    default:
+      return [];
   }
 }
 

@@ -25,6 +25,7 @@ export async function getAllTransactions(accountId: number) {
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId})
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -38,6 +39,7 @@ export async function getTransactionsByDate(
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -52,6 +54,7 @@ export async function getCashInTransactionByDate(
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."creditedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -61,6 +64,7 @@ export async function getCashInTransaction(accountId: number) {
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."creditedAccountId"=${accountId})
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -71,6 +75,7 @@ export async function getCashOutTransaction(accountId: number) {
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."debitedAccountId"=${accountId})
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -84,6 +89,7 @@ export async function getCashOutTransactionByDate(
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
   WHERE (t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  ORDER BY t."createdAt" DESC
   `;
 }
 
@@ -109,6 +115,15 @@ export async function getBalance(accountId: number) {
   return await prisma.accounts.findFirst({
     where: {
       id: accountId,
+    },
+    select: {
+      id: true,
+      Users: {
+        select: {
+          username: true,
+        },
+      },
+      balance: true,
     },
   });
 }

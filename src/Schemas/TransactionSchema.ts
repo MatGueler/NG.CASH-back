@@ -8,6 +8,8 @@ const newTransactionSchema = joi.object({
 const transactionByDateSchema = joi.object({
   startDate: joi.string().allow("").required(),
   endDate: joi.string().allow("").required(),
+  credited: joi.boolean().required(),
+  debited: joi.boolean().required(),
 });
 
 const transactionSchema = {

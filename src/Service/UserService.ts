@@ -2,11 +2,12 @@ import * as userRepository from "../Repository/UserRepository";
 
 //  # Libs
 import bcrypt from "bcrypt";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 // # Types
 import { ILogin, IRegister, UserType } from "../Types/UserTypes";
 import { Users } from "@prisma/client";
+import { unauthorizedError, wrongSchemaError } from "../Utils/ErrorUtils";
 
 export async function registerUser(body: IRegister) {
   await comparePasswords(body);
@@ -35,7 +36,7 @@ async function verifyUserNameExist(username: string) {
   const user: Users = await userRepository.verifyUsernameAvailability(username);
 
   if (!user) {
-    throw "Dados inválidos";
+    throw wrongSchemaError("Invalid data");
   }
   return user;
 }
@@ -46,7 +47,7 @@ async function verifyUsernameAvailability(username: string) {
   );
 
   if (user) {
-    throw "username insidponível";
+    throw wrongSchemaError("invalid data");
   }
 }
 
@@ -85,12 +86,12 @@ async function compareEncryptedPassword(
 ) {
   const verifyPassword = bcrypt.compareSync(password, encryptedPassword);
   if (!verifyPassword) {
-    throw "User or password are incorrect";
+    throw unauthorizedError("User or password are incorrect");
   }
 }
 
 async function comparePasswords(body: IRegister) {
   if (body.password !== body.confirmPassword) {
-    throw "Passwords are differents";
+    throw wrongSchemaError("Passwords are differents");
   }
 }

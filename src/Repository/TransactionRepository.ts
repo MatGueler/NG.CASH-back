@@ -20,13 +20,16 @@ export async function getUserByUsername(username: string) {
 
 // - All transactions
 export async function getAllTransactions(accountId: number) {
-  return await prisma.$queryRaw`
+  return await prisma.$queryRawUnsafe(
+    `
   SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
-  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId})
+  WHERE (t."creditedAccountId"=$1 OR t."debitedAccountId"=$1)
   ORDER BY t."createdAt" DESC
-  `;
+  `,
+    accountId
+  );
 }
 
 export async function getTransactionsByDate(
@@ -34,13 +37,18 @@ export async function getTransactionsByDate(
   endDate: string,
   accountId: number
 ) {
-  return await prisma.$queryRaw`
+  return await prisma.$queryRawUnsafe(
+    `
   SELECT t.*,u.username as "debitedUser",u2.username as "creditedUser" FROM transactions t
   JOIN users u ON u."accountId"=t."debitedAccountId"
   JOIN users u2 ON u2."accountId"=t."creditedAccountId"
-  WHERE (t."creditedAccountId"=${accountId} OR t."debitedAccountId"=${accountId}) AND (t."createdAt" BETWEEN ${startDate}::timestamp without time zone AND ${endDate}::timestamp without time zone)
+  WHERE (t."creditedAccountId"=$1 OR t."debitedAccountId"=$1) AND (t."createdAt" BETWEEN $2::timestamp without time zone AND $3::timestamp without time zone)
   ORDER BY t."createdAt" DESC
-  `;
+  `,
+    accountId,
+    startDate,
+    endDate
+  );
 }
 
 // - Cash-in transactions

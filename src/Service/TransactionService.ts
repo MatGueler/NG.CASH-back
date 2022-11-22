@@ -1,11 +1,7 @@
-import { Transactions, Users } from "@prisma/client";
-import { number } from "joi";
+import { Users } from "@prisma/client";
 import * as transactionRepository from "../Repository/TransactionRepository";
-import {
-  CreateTransactionType,
-  ITransaction,
-  ITransactionDate,
-} from "../Types/TransactionType";
+import { ITransaction, ITransactionDate } from "../Types/TransactionType";
+import { unauthorizedError, wrongSchemaError } from "../Utils/ErrorUtils";
 
 //  # Libs
 
@@ -116,7 +112,7 @@ async function CreateTransaction(transactionData: any) {
 
 async function getUserbyUsername(username: string) {
   const user = await transactionRepository.getUserByUsername(username ?? "");
-  if (!user) throw "esse usuário não existe";
+  if (!user) throw "User not found";
   return user;
 }
 
@@ -142,9 +138,10 @@ async function ChangeBalanceValues(
 //  - Aux functions
 
 async function verifyBalanceEnough(balance: number, value: number) {
-  if (balance - value < 0) throw "Saldo insuficiente";
+  if (balance - value < 0) throw unauthorizedError("insufficient balance");
 }
 
 async function verifySameUser(debitedUserId: number, creditedUserId: number) {
-  if (debitedUserId === creditedUserId) throw "Operação indisponível";
+  if (debitedUserId === creditedUserId)
+    throw wrongSchemaError("Operation unavailable");
 }

@@ -6,34 +6,52 @@ import jwt from "jsonwebtoken";
 
 // # Types
 import { ILogin, IRegister, UserType } from "../Types/UserTypes";
-import { Users } from "@prisma/client";
+import { Prisma, Users } from "@prisma/client";
 import { unauthorizedError, wrongSchemaError } from "../Utils/ErrorUtils";
+import prisma from "../Database/prisma";
 
 export async function registerUser(body: IRegister) {
-  await comparePasswords(body);
-  await verifyUsernameAvailability(body.username);
-  const accountId = await createAccount();
-  const encryptedPassword = encryptPassword(body.password);
+  try {
+    await prisma.$transaction(async (db) => {
+      const accountId = await createAccount(db);
+      await comparePasswords(body);
+      await verifyUsernameAvailability(db, body.username);
+      const encryptedPassword = encryptPassword(body.password);
 
-  delete body.confirmPassword;
+      delete body.confirmPassword;
 
-  await createUser({ ...body, password: encryptedPassword, accountId });
+      await createUser(db, { ...body, password: encryptedPassword, accountId });
+    });
+  } catch (error) {
+    console.log(error);
+    throw 500;
+  }
 }
 
 export async function loginUser(body: ILogin) {
-  const user = await verifyUserNameExist(body.username);
-  await compareEncryptedPassword(body.password, user.password);
-  const token = generateToken(user.id);
-  return token;
+  try {
+    await prisma.$transaction(async (db) => {
+      const user = await verifyUserNameExist(db, body.username);
+      await compareEncryptedPassword(body.password, user.password);
+      const token = generateToken(user.id);
+      return token;
+    });
+  } catch (error) {
+    console.log(error);
+    throw 500;
+  }
 }
 
 // - Database functions
-async function createUser(body: UserType) {
-  await userRepository.createUser(body);
+async function createUser(db: any, body: UserType) {
+  await userRepository.createUser(db, body);
 }
 
-async function verifyUserNameExist(username: string) {
-  const user: Users = await userRepository.verifyUsernameAvailability(username);
+async function verifyUserNameExist(db: any, username: string) {
+  const user: Users = await userRepository.verifyUsernameAvailability(
+    db,
+    username
+  );
 
   if (!user) {
     throw wrongSchemaError("Invalid data");
@@ -41,8 +59,9 @@ async function verifyUserNameExist(username: string) {
   return user;
 }
 
-async function verifyUsernameAvailability(username: string) {
+async function verifyUsernameAvailability(db: any, username: string) {
   const user: UserType = await userRepository.verifyUsernameAvailability(
+    db,
     username
   );
 
@@ -51,9 +70,9 @@ async function verifyUsernameAvailability(username: string) {
   }
 }
 
-async function createAccount() {
+async function createAccount(db: any) {
   const initialBalance: number = 100;
-  const account = await userRepository.createAccount(initialBalance);
+  const account = await userRepository.createAccount(db, initialBalance);
   return account.id;
 }
 

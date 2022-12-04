@@ -4,7 +4,7 @@ WORKDIR /user/src/
 
 COPY . .
 
-RUN npm i
+RUN npm i --force
 RUN npm run build
 
 EXPOSE 5000
